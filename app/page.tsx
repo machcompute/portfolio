@@ -210,6 +210,31 @@ async function fetchEducation(): Promise<Education[]> {
   return entries;
 }
 
+function HeroGeometry() {
+  return (
+    <div className="w-full max-w-xs sm:max-w-sm lg:max-w-md aspect-square">
+      <svg viewBox="0 0 400 400" className="w-full h-full">
+        {/* Large quarter circle — mint */}
+        <path d="M400,0 A400,400 0 0,1 0,400 L400,400 Z" fill="#98DFAF" />
+        {/* Overlapping circle — lavender */}
+        <circle cx="140" cy="140" r="120" fill="#B8B3E9" />
+        {/* Small rounded square — dark */}
+        <rect x="80" y="300" width="60" height="60" rx="12" fill="#2E282A" />
+        {/* Diamond accent — lime */}
+        <rect
+          x="300"
+          y="180"
+          width="36"
+          height="36"
+          rx="4"
+          transform="rotate(45 318 198)"
+          fill="#DEEFB7"
+        />
+      </svg>
+    </div>
+  );
+}
+
 const FOOTER_NAV = [
   { label: "Publications", href: "#publications" },
   { label: "Research", href: "#research" },
@@ -266,14 +291,21 @@ export default async function Portfolio() {
 
       {/* Hero */}
       <section className="max-w-7xl mx-auto px-6 pt-20 pb-12 lg:pt-32 lg:pb-20">
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-mc-dark">
-          Publications &{" "}
-          <span className="text-mc-lavender">Research</span>
-        </h1>
-        <p className="mt-6 text-lg text-mc-gray leading-relaxed max-w-2xl">
-          Academic work in systems, performance engineering, and distributed
-          computing. Currently pursuing a PhD in Computer Science.
-        </p>
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+          <div className="flex-1 max-w-xl">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-mc-dark">
+              Publications &{" "}
+              <span className="text-mc-lavender">Research</span>
+            </h1>
+            <p className="mt-6 text-lg text-mc-gray leading-relaxed max-w-lg">
+              Academic work in systems, performance engineering, and distributed
+              computing. Currently pursuing a PhD in Computer Science.
+            </p>
+          </div>
+          <div className="flex-1 flex justify-center lg:justify-end">
+            <HeroGeometry />
+          </div>
+        </div>
       </section>
 
       {/* Publications */}
