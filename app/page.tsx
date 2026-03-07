@@ -1,7 +1,7 @@
 import Image from "next/image";
 
-// Revalidate every 24 hours — new ORCID publications auto-appear
-export const revalidate = 86400;
+// Revalidate every 5 minutes
+export const revalidate = 300;
 
 const ORCID_ID = "0009-0005-6728-3089";
 const AUTHOR_NAME = "Luís Carlos Afonso";
