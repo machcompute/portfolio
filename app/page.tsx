@@ -212,24 +212,22 @@ async function fetchEducation(): Promise<Education[]> {
 
 function HeroGeometry() {
   return (
-    <div className="w-full max-w-xs sm:max-w-sm lg:max-w-md aspect-square">
-      <svg viewBox="0 0 400 400" className="w-full h-full">
-        {/* Large quarter circle — mint */}
+    <div className="w-full max-w-xs sm:max-w-sm lg:max-w-md aspect-square relative">
+      {/* Large quarter circle — mint */}
+      <svg viewBox="0 0 400 400" className="absolute inset-0 w-full h-full geo-arc">
         <path d="M400,0 A400,400 0 0,1 0,400 L400,400 Z" fill="#98DFAF" />
-        {/* Overlapping circle — lavender */}
+      </svg>
+      {/* Overlapping circle — lavender */}
+      <svg viewBox="0 0 400 400" className="absolute inset-0 w-full h-full geo-circle">
         <circle cx="140" cy="140" r="120" fill="#B8B3E9" />
-        {/* Small rounded square — dark */}
+      </svg>
+      {/* Small rounded square — dark */}
+      <svg viewBox="0 0 400 400" className="absolute inset-0 w-full h-full geo-square">
         <rect x="80" y="300" width="60" height="60" rx="12" fill="#2E282A" />
-        {/* Diamond accent — lime */}
-        <rect
-          x="300"
-          y="180"
-          width="36"
-          height="36"
-          rx="4"
-          transform="rotate(45 318 198)"
-          fill="#DEEFB7"
-        />
+      </svg>
+      {/* Diamond accent — lime */}
+      <svg viewBox="0 0 400 400" className="absolute inset-0 w-full h-full geo-diamond">
+        <rect x="300" y="180" width="36" height="36" rx="4" transform="rotate(45 318 198)" fill="#DEEFB7" />
       </svg>
     </div>
   );
