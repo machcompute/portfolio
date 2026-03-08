@@ -10,7 +10,7 @@ const NAV_LINKS = [
   { label: "Publications", href: "#publications" },
   { label: "Research", href: "#research" },
   { label: "Education", href: "#education" },
-  { label: "Certifications", href: "/certifications" },
+  { label: "Certifications", href: "#certifications" },
 ];
 
 type Publication = {
@@ -238,7 +238,7 @@ const FOOTER_NAV = [
   { label: "Publications", href: "#publications" },
   { label: "Research", href: "#research" },
   { label: "Education", href: "#education" },
-  { label: "Certifications", href: "/certifications" },
+  { label: "Certifications", href: "#certifications" },
   { label: "Main Site", href: "https://machcomputing.com" },
 ];
 
@@ -433,6 +433,39 @@ export default async function Portfolio() {
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Certifications */}
+      <section id="certifications" className="py-20 lg:py-28 bg-mc-dark/[0.02]">
+        <div className="max-w-7xl mx-auto px-6">
+          <h2 className="text-3xl sm:text-4xl font-bold text-mc-dark tracking-tight">
+            Certifications
+          </h2>
+          <p className="mt-3 text-mc-gray text-lg max-w-2xl">
+            Professional credentials in data science, simulation, and digital systems.
+          </p>
+          <div className="mt-8">
+            <a
+              href="/certifications"
+              className="inline-flex items-center gap-2 text-sm font-medium px-5 py-2.5 rounded-full bg-mc-lavender/15 text-mc-dark/70 hover:bg-mc-lavender/25 transition-colors"
+            >
+              View all certifications
+              <svg
+                className="w-3.5 h-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                />
+              </svg>
+            </a>
           </div>
         </div>
       </section>
