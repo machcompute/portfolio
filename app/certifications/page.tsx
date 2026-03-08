@@ -232,6 +232,7 @@ export default function Certifications() {
                 </Fragment>
               );
             })}
+          </div>
         </div>
       </section>
 
