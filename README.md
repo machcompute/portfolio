@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MACH COMPUTING — Portfolio
 
-## Getting Started
+Academic portfolio at [portfolio.machcomputing.com](https://portfolio.machcomputing.com).
 
-First, run the development server:
+## Overview
+
+Publications and research portfolio that auto-syncs from ORCID. Sections: Publications, Research Areas, and Education.
+
+Publication metadata is fetched from the ORCID public API and enriched with author/venue data from Crossref. Education entries are also pulled from ORCID. Both revalidate every 5 minutes via ISR.
+
+## Tech Stack
+
+Next.js 16 (App Router) / Tailwind CSS v4 / TypeScript / React 19
+
+## Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev   # localhost:3001
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+No environment variables required. The ORCID ID is configured directly in `page.tsx`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+app/
+  globals.css    — Theme tokens, keyframe animations
+  layout.tsx     — Root layout, fonts, metadata
+  page.tsx       — Async Server Component (full page + data fetching)
+public/
+  logo.png       — Shield logo
+  text_logo.png  — Wordmark
+  favicon.ico
+```
 
-## Learn More
+## Data Sources
 
-To learn more about Next.js, take a look at the following resources:
+| Source       | Endpoint                                   | Data                     |
+| ------------ | ------------------------------------------ | ------------------------ |
+| ORCID        | `pub.orcid.org/v3.0/{id}/works`            | Publications list        |
+| Crossref     | `api.crossref.org/works/{doi}`             | Authors, venue names     |
+| ORCID        | `pub.orcid.org/v3.0/{id}/educations`       | Education entries        |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+ORCID ID: `0009-0005-6728-3089`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Sections
 
-## Deploy on Vercel
+| Section          | Content                                                        |
+| ---------------- | -------------------------------------------------------------- |
+| **Hero**         | Title + animated geometric composition                         |
+| **Publications** | Auto-synced from ORCID. Author's name bolded, links to DOI/PDF |
+| **Research**     | Algorithms, AI, HPC — static cards                             |
+| **Education**    | Auto-synced from ORCID. Timeline with "Current" badges         |
+| **Footer**       | Nav links + ORCID, Google Scholar, GitHub, LinkedIn            |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Related
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Home](https://machcomputing.com) — main landing page
+- [Projects](https://projects.machcomputing.com) — interactive experiments
