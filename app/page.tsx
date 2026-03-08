@@ -10,6 +10,7 @@ const NAV_LINKS = [
   { label: "Publications", href: "#publications" },
   { label: "Research", href: "#research" },
   { label: "Education", href: "#education" },
+  { label: "Certifications", href: "/certifications" },
 ];
 
 type Publication = {
@@ -237,6 +238,7 @@ const FOOTER_NAV = [
   { label: "Publications", href: "#publications" },
   { label: "Research", href: "#research" },
   { label: "Education", href: "#education" },
+  { label: "Certifications", href: "/certifications" },
   { label: "Main Site", href: "https://machcomputing.com" },
 ];
 
