@@ -31,6 +31,15 @@ type Certification = {
 
 const CERTIFICATIONS: Certification[] = [
   {
+    name: "Matrix Algebra for Engineers",
+    issuer: "The Hong Kong University of Science and Technology via Coursera",
+    date: "Mar 21, 2026",
+    description:
+      "Matrix algebra fundamentals for engineering applications, covering systems of linear equations, vector spaces, eigenvalues and eigenvectors, and matrix decompositions.",
+    verifyUrl: "https://coursera.org/verify/XFQ9UHMOBD7O",
+    pdfPath: "/certificates/matrix-algebra.pdf",
+  },
+  {
     name: "Statistics For Data Science",
     issuer: "Coursera",
     date: "Dec 9, 2025",
