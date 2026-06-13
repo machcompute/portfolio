@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Portfolio — MACH COMPUTING",
+  title: "Portfolio",
   description:
     "Publications, research, and academic work by MACH COMPUTING.",
 };
