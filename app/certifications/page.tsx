@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { Fragment, useState } from "react";
 
 const NAV_LINKS = [
@@ -70,14 +71,13 @@ const CERTIFICATIONS: Certification[] = [
 
 export default function Certifications() {
   const [selected, setSelected] = useState<number | null>(null);
-  const cert = selected !== null ? CERTIFICATIONS[selected] : null;
 
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-mc-gray/15">
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
-          <a href="/" className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3">
             <Image
               src="/logo.png"
               alt="MACH COMPUTING"
@@ -91,7 +91,7 @@ export default function Certifications() {
               height={20}
               className="hidden sm:block"
             />
-          </a>
+          </Link>
           <div className="hidden lg:flex items-center gap-8">
             {NAV_LINKS.map((link) => (
               <a
