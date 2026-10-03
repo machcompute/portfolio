@@ -1,4 +1,5 @@
 import Image from "next/image";
+import CertificationsGrid from "./components/CertificationsGrid";
 
 // Revalidate every 5 minutes
 export const revalidate = 300;
@@ -157,6 +158,7 @@ type Education = {
   field: string;
   years: string;
   current: boolean;
+  url: string;
 };
 
 async function fetchEducation(): Promise<Education[]> {
@@ -187,15 +189,17 @@ async function fetchEducation(): Promise<Education[]> {
       const org = summary.organization?.name ?? "";
       const startYear = summary["start-date"]?.year?.value;
       const endYear = summary["end-date"]?.year?.value;
+      const url = summary.url?.value ?? "";
 
       const degree = role || dept || "Degree";
       const field = role ? dept : "";
-      const current = !endYear;
-      const years = current
-        ? `${startYear ?? "?"} — Present`
-        : `${startYear ?? "?"} — ${endYear}`;
+      // An end date in a future year is an expected completion date
+      const current = !endYear || Number(endYear) > new Date().getFullYear();
+      const years = endYear
+        ? `${startYear ?? "?"} — ${endYear}`
+        : `${startYear ?? "?"} — Present`;
 
-      entries.push({ degree, institution: org, field, years, current });
+      entries.push({ degree, institution: org, field, years, current, url });
     }
   }
 
@@ -410,7 +414,18 @@ export default async function Portfolio() {
               >
                 <div className="flex items-center gap-3">
                   <h3 className="text-lg font-semibold text-mc-dark">
-                    {entry.degree}
+                    {entry.url ? (
+                      <a
+                        href={entry.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-mc-dark/70 transition-colors"
+                      >
+                        {entry.degree}
+                      </a>
+                    ) : (
+                      entry.degree
+                    )}
                   </h3>
                   {entry.current && (
                     <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-mc-mint/20 text-mc-dark/70">
@@ -440,26 +455,8 @@ export default async function Portfolio() {
           <p className="mt-3 text-mc-gray text-lg max-w-2xl">
             Professional credentials in data science, simulation, and digital systems.
           </p>
-          <div className="mt-8">
-            <a
-              href="/certifications"
-              className="inline-flex items-center gap-2 text-sm font-medium px-5 py-2.5 rounded-full bg-mc-lavender/15 text-mc-dark/70 hover:bg-mc-lavender/25 transition-colors"
-            >
-              View all certifications
-              <svg
-                className="w-3.5 h-3.5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                />
-              </svg>
-            </a>
+          <div className="mt-12">
+            <CertificationsGrid />
           </div>
         </div>
       </section>
