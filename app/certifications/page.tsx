@@ -32,6 +32,15 @@ type Certification = {
 
 const CERTIFICATIONS: Certification[] = [
   {
+    name: "Calculus for Engineers",
+    issuer: "The Hong Kong University of Science and Technology via Coursera",
+    date: "Oct 3, 2026",
+    description:
+      "Single and multivariable calculus for engineering applications, covering limits, derivatives, integrals, series, and partial derivatives.",
+    verifyUrl: "https://coursera.org/verify/VBNF0094IWJX",
+    pdfPath: "/certificates/calculus.pdf",
+  },
+  {
     name: "Matrix Algebra for Engineers",
     issuer: "The Hong Kong University of Science and Technology via Coursera",
     date: "Mar 21, 2026",
