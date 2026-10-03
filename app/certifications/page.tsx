@@ -135,7 +135,7 @@ export default function Certifications() {
       {/* Certifications Grid */}
       <section className="pb-20 lg:pb-28">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 grid-flow-row-dense gap-6">
             {CERTIFICATIONS.map((c, i) => {
               const isSelected = selected === i;
               return (
