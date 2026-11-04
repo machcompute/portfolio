@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { label: "Publications", href: "#publications" },
   { label: "Research", href: "#research" },
   { label: "Education", href: "#education" },
+  { label: "Funding", href: "#funding" },
   { label: "Certifications", href: "#certifications" },
 ];
 
@@ -136,19 +137,19 @@ async function fetchPublications(): Promise<Publication[]> {
 
 const RESEARCH_AREAS = [
   {
-    title: "Algorithms",
+    title: "Healthcare Digital Twins",
     description:
-      "Design and analysis of efficient algorithms for combinatorial optimization, graph problems, and computational geometry. Interested in bridging theoretical guarantees with practical performance.",
+      "Patient-specific representations built from fragmented longitudinal clinical records. A twin holds a patient's history in time order, updates as new observations arrive, and predicts future states or trajectories.",
   },
   {
-    title: "Artificial Intelligence",
+    title: "Patient Trajectory Modelling",
     description:
-      "Using AI as a tool for solving complex problems across domains. From natural language processing to predictive modeling, exploring how machine learning can be applied to real-world challenges.",
+      "Generative models that learn how patients evolve from many clinical histories and project several possible continuations of an individual's record, with their uncertainty. Projections are checked against what is later recorded.",
   },
   {
-    title: "High Performance Computing",
+    title: "Continual Learning",
     description:
-      "Parallel and distributed computing, GPU acceleration, and performance optimization. Focused on scaling compute-intensive workloads across heterogeneous architectures.",
+      "Models that keep learning as clinical histories accumulate. Central questions are when a patient's projections need revising, when the shared model itself must be updated, and how to update without losing earlier capabilities.",
   },
 ];
 
@@ -215,6 +216,96 @@ async function fetchEducation(): Promise<Education[]> {
   return entries;
 }
 
+type Funding = {
+  title: string;
+  funder: string;
+  grantNumber: string;
+  type: string;
+  years: string;
+  active: boolean;
+  url: string;
+};
+
+type OrcidDate = {
+  year?: { value: string };
+  month?: { value: string } | null;
+} | null;
+
+function formatOrcidDate(date: OrcidDate): string {
+  const year = date?.year?.value;
+  if (!year) return "";
+  const month = date?.month?.value;
+  if (!month) return year;
+  const name = new Date(Number(year), Number(month) - 1).toLocaleString(
+    "en-US",
+    { month: "short" }
+  );
+  return `${name} ${year}`;
+}
+
+// Months since year 0, so ORCID dates with optional months can be compared
+function orcidMonthIndex(date: OrcidDate, fallbackMonth: number): number {
+  const year = Number(date?.year?.value);
+  const month = Number(date?.month?.value ?? fallbackMonth);
+  return year * 12 + (month - 1);
+}
+
+async function fetchFunding(): Promise<Funding[]> {
+  const res = await fetch(
+    `https://pub.orcid.org/v3.0/${ORCID_ID}/fundings`,
+    { headers: { Accept: "application/json" } }
+  );
+
+  if (!res.ok) return [];
+
+  const data = await res.json();
+  const groups = data.group ?? [];
+
+  const entries: Funding[] = [];
+
+  for (const group of groups) {
+    const summary = group["funding-summary"]?.[0];
+    if (!summary) continue;
+
+    // Collapse stray whitespace from manually entered titles
+    const title = (summary.title?.title?.value ?? "Untitled")
+      .replace(/\s+/g, " ")
+      .trim();
+    const funder = summary.organization?.name ?? "";
+    const externalIds = summary["external-ids"]?.["external-id"] ?? [];
+    const grantNumber =
+      externalIds.find(
+        (id: { "external-id-type": string }) =>
+          id["external-id-type"] === "grant_number"
+      )?.["external-id-value"] ?? "";
+    const rawType: string = summary.type ?? "";
+    const type = rawType
+      ? rawType.charAt(0).toUpperCase() + rawType.slice(1).replace(/-/g, " ")
+      : "";
+    const start: OrcidDate = summary["start-date"];
+    const end: OrcidDate = summary["end-date"];
+    const startLabel = formatOrcidDate(start);
+    const endLabel = formatOrcidDate(end);
+    const years = startLabel
+      ? `${startLabel} — ${endLabel || "Present"}`
+      : "";
+
+    // Active once started and until the end month is over; a missing
+    // month counts as January for the start and December for the end
+    const now = new Date();
+    const nowIndex = now.getFullYear() * 12 + now.getMonth();
+    const active =
+      !!start?.year?.value &&
+      orcidMonthIndex(start, 1) <= nowIndex &&
+      (!end?.year?.value || orcidMonthIndex(end, 12) >= nowIndex);
+    const url = summary.url?.value ?? "";
+
+    entries.push({ title, funder, grantNumber, type, years, active, url });
+  }
+
+  return entries;
+}
+
 function HeroGeometry() {
   return (
     <div className="w-full max-w-xs sm:max-w-sm lg:max-w-md aspect-square relative">
@@ -242,6 +333,7 @@ const FOOTER_NAV = [
   { label: "Publications", href: "#publications" },
   { label: "Research", href: "#research" },
   { label: "Education", href: "#education" },
+  { label: "Funding", href: "#funding" },
   { label: "Certifications", href: "#certifications" },
   { label: "Main Site", href: "https://machcomputing.com" },
 ];
@@ -249,6 +341,7 @@ const FOOTER_NAV = [
 export default async function Portfolio() {
   const publications = await fetchPublications();
   const education = await fetchEducation();
+  const funding = await fetchFunding();
 
   return (
     <div className="min-h-screen bg-white">
@@ -296,8 +389,9 @@ export default async function Portfolio() {
               <span className="text-mc-lavender">Research</span>
             </h1>
             <p className="mt-6 text-lg text-mc-gray leading-relaxed max-w-lg">
-              Academic work in systems, performance engineering, and distributed
-              computing. Currently pursuing a PhD in Computer Science.
+              Academic work on healthcare digital twins and models that learn
+              from longitudinal clinical records. Currently pursuing a PhD in
+              Computer Science.
             </p>
           </div>
           <div className="flex-1 flex justify-center lg:justify-end">
@@ -446,8 +540,73 @@ export default async function Portfolio() {
         </div>
       </section>
 
+      {/* Funding */}
+      {funding.length > 0 && (
+        <section id="funding" className="py-20 lg:py-28 bg-mc-dark/[0.02]">
+          <div className="max-w-7xl mx-auto px-6">
+            <h2 className="text-3xl sm:text-4xl font-bold text-mc-dark tracking-tight">
+              Funding
+            </h2>
+            <p className="mt-3 text-mc-gray text-lg max-w-2xl">
+              Research grants and computing allocations.
+            </p>
+            <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+              {funding.map((grant) => (
+                <div
+                  key={grant.grantNumber || grant.title}
+                  className="p-6 rounded-2xl border border-mc-gray/15 bg-white flex flex-col"
+                >
+                  <div className="flex items-start gap-2">
+                    <div className="w-2 h-2 rounded-full bg-mc-lime shrink-0 mt-2.5 ring-1 ring-mc-dark/10" />
+                    <h3 className="text-lg font-semibold text-mc-dark leading-snug">
+                      {grant.title}
+                    </h3>
+                  </div>
+                  <p className="mt-3 text-sm text-mc-gray">
+                    {grant.url ? (
+                      <a
+                        href={grant.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-mc-dark transition-colors"
+                      >
+                        {grant.funder}
+                      </a>
+                    ) : (
+                      grant.funder
+                    )}
+                  </p>
+                  {grant.years && (
+                    <p className="mt-0.5 text-sm font-mono text-mc-gray/60">
+                      {grant.years}
+                    </p>
+                  )}
+                  <div className="mt-4 pt-4 border-t border-mc-gray/10 flex flex-wrap items-center gap-2">
+                    {grant.type && (
+                      <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-mc-lime/30 text-mc-dark/70">
+                        {grant.type}
+                      </span>
+                    )}
+                    {grant.active && (
+                      <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-mc-mint/20 text-mc-dark/70">
+                        Active
+                      </span>
+                    )}
+                    {grant.grantNumber && (
+                      <span className="text-xs font-mono text-mc-gray/70">
+                        {grant.grantNumber}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Certifications */}
-      <section id="certifications" className="py-20 lg:py-28 bg-mc-dark/[0.02]">
+      <section id="certifications" className="py-20 lg:py-28">
         <div className="max-w-7xl mx-auto px-6">
           <h2 className="text-3xl sm:text-4xl font-bold text-mc-dark tracking-tight">
             Certifications
