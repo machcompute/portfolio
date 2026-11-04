@@ -7,11 +7,19 @@ type Certification = {
   issuer: string;
   date: string;
   description: string;
-  verifyUrl: string;
+  verifyUrl?: string;
   pdfPath: string;
 };
 
 export const CERTIFICATIONS: Certification[] = [
+  {
+    name: "Research Tools and Platforms: Resources to Enhance Your Research Process",
+    issuer: "Sage Publishing",
+    date: "Nov 4, 2026",
+    description:
+      "One-hour webinar from the How to Do Research and Get Published series, covering tools and platforms that support the research and publishing process.",
+    pdfPath: "/certificates/research-tools.pdf",
+  },
   {
     name: "Calculus for Engineers",
     issuer: "The Hong Kong University of Science and Technology via Coursera",
@@ -67,7 +75,7 @@ export default function CertificationsGrid() {
       {CERTIFICATIONS.map((c, i) => {
         const isSelected = selected === i;
         return (
-          <Fragment key={c.verifyUrl}>
+          <Fragment key={c.pdfPath}>
             <button
               onClick={() => setSelected(isSelected ? null : i)}
               className={`group p-6 rounded-2xl border text-left transition-colors ${
@@ -123,27 +131,29 @@ export default function CertificationsGrid() {
                     </div>
 
                     <div className="mt-8 flex flex-col gap-3">
-                      <a
-                        href={c.verifyUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-mc-dark text-white text-sm font-medium hover:bg-mc-dark/85 transition-colors"
-                      >
-                        Verify on Coursera
-                        <svg
-                          className="w-3.5 h-3.5"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth={2}
+                      {c.verifyUrl && (
+                        <a
+                          href={c.verifyUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-mc-dark text-white text-sm font-medium hover:bg-mc-dark/85 transition-colors"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-4.5-6h6m0 0v6m0-6L9.75 14.25"
-                          />
-                        </svg>
-                      </a>
+                          Verify on Coursera
+                          <svg
+                            className="w-3.5 h-3.5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-4.5-6h6m0 0v6m0-6L9.75 14.25"
+                            />
+                          </svg>
+                        </a>
+                      )}
                       <a
                         href={c.pdfPath}
                         download
