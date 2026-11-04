@@ -1,5 +1,6 @@
 import Image from "next/image";
 import CertificationsGrid from "./components/CertificationsGrid";
+import { CERTIFICATIONS } from "./data/certifications";
 
 // Revalidate every 5 minutes
 export const revalidate = 300;
@@ -306,6 +307,26 @@ async function fetchFunding(): Promise<Funding[]> {
   return entries;
 }
 
+type CitationMetrics = { citations: number; hIndex: number };
+
+async function fetchCitationMetrics(): Promise<CitationMetrics> {
+  // OpenAlex resolves authors by ORCID and computes citation stats
+  try {
+    const res = await fetch(
+      `https://api.openalex.org/authors/orcid:${ORCID_ID}`,
+      { headers: { Accept: "application/json" } }
+    );
+    if (!res.ok) return { citations: 0, hIndex: 0 };
+    const data = await res.json();
+    return {
+      citations: data.cited_by_count ?? 0,
+      hIndex: data.summary_stats?.h_index ?? 0,
+    };
+  } catch {
+    return { citations: 0, hIndex: 0 };
+  }
+}
+
 function HeroGeometry() {
   return (
     <div className="w-full max-w-xs sm:max-w-sm lg:max-w-md aspect-square relative">
@@ -342,6 +363,25 @@ export default async function Portfolio() {
   const publications = await fetchPublications();
   const education = await fetchEducation();
   const funding = await fetchFunding();
+  const metrics = await fetchCitationMetrics();
+
+  const publicationYears = publications.map((p) => p.year).filter((y) => y > 0);
+  // Citation tiles only appear once there is something to count
+  const count = (n: number) => n.toLocaleString("en-US");
+  const kpis = [
+    { label: "Publications", value: count(publications.length) },
+    ...(metrics.citations > 0
+      ? [
+          { label: "Citations", value: count(metrics.citations) },
+          { label: "h-index", value: count(metrics.hIndex) },
+        ]
+      : []),
+    { label: "Research grants", value: count(funding.length) },
+    { label: "Certificates", value: count(CERTIFICATIONS.length) },
+    ...(publicationYears.length > 0
+      ? [{ label: "Publishing since", value: String(Math.min(...publicationYears)) }]
+      : []),
+  ];
 
   return (
     <div className="min-h-screen bg-white">
@@ -398,6 +438,24 @@ export default async function Portfolio() {
             <HeroGeometry />
           </div>
         </div>
+      </section>
+
+      {/* Key figures */}
+      <section aria-label="Key figures" className="max-w-7xl mx-auto px-6">
+        <dl
+          className={`grid grid-cols-2 gap-y-8 gap-x-6 py-10 border-y border-mc-gray/15 ${
+            kpis.length > 4 ? "md:grid-cols-3 lg:grid-cols-6" : "md:grid-cols-4"
+          }`}
+        >
+          {kpis.map((kpi) => (
+            <div key={kpi.label} className="border-l-2 border-mc-lavender/60 pl-5">
+              <dt className="text-sm text-mc-gray">{kpi.label}</dt>
+              <dd className="mt-1 text-4xl font-semibold text-mc-dark tracking-tight">
+                {kpi.value}
+              </dd>
+            </div>
+          ))}
+        </dl>
       </section>
 
       {/* Publications */}
